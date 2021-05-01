@@ -4,11 +4,11 @@ const departmentController = require('../../controllers/department.controller');
 const router = express.Router();
 
 router.get('/', departmentController.getDepartments);
-router.get('/:id',  departmentController.getDepartment);
-router.post('/',  departmentController.createDepartment);
-router.update('/:id',  departmentController.updateDepartment);
-router.delete('/:id',  departmentController.deleteDepartment);
-router.get('/search',  departmentController.searchDepartments);
+router.get('/:departmentId', departmentController.getDepartment);
+router.post('/', departmentController.createDepartment);
+router.put('/:departmentId', departmentController.updateDepartment);
+router.delete('/:departmentId', departmentController.deleteDepartment);
+router.get('/search', departmentController.searchDepartments);
 
 module.exports = router;
 

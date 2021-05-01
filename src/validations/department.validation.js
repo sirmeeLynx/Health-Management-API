@@ -1,18 +1,20 @@
 const Joi = require('joi');
 const { objectId, telephone } = require('./custom.validation');
 
-const _metaObject = Joi.array().optional().items(
-  Joi.object({
-   key: Joi.string().required(), 
-   value:Joi.string().required() 
-  })
-);
+const _metaObject = Joi.array()
+  .optional()
+  .items(
+    Joi.object({
+      key: Joi.string().required(),
+      value: Joi.string().required(),
+    })
+  );
 
 const _contactPerson = Joi.object().keys({
-    name: Joi.string().required(),
-    email: Joi.string().required().email(),
-    telephone: Joi.string().required().custom(telephone),
-    metadata: _metaObject,
+  name: Joi.string().required(),
+  email: Joi.string().required().email(),
+  telephone: Joi.string().required().custom(telephone),
+  metadata: _metaObject,
 });
 
 const _department = Joi.object().keys({
@@ -53,7 +55,7 @@ const deleteDepartment = {
 
 module.exports = {
   createDepartment,
-  getUsers,
+  getDepartments,
   getDepartment,
   updateDepartment,
   deleteDepartment,

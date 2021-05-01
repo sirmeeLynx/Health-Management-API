@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { toJSON } = require('./plugins');
+const { toJSON, paginate } = require('./plugins');
 
 const departmentSchema = mongoose.Schema(
   {
@@ -14,18 +14,20 @@ const departmentSchema = mongoose.Schema(
       ref: 'ContactPerson',
       required: true,
     },
-    metaData: [{
-      key: {
-       type: String,
-       required: true,
-       trim: true,
-     }, 
-      value: {
-       type: String,
-       required: true,
-       trim: true,
-     } 
-   }],
+    metaData: [
+      {
+        key: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+        value: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+      },
+    ],
   },
   {
     timestamps: true,
@@ -34,6 +36,7 @@ const departmentSchema = mongoose.Schema(
 
 // add plugin that converts mongoose to json
 departmentSchema.plugin(toJSON);
+departmentSchema.plugin(paginate);
 
 /**
  * @typedef Department

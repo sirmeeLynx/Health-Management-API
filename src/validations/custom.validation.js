@@ -5,6 +5,16 @@ const objectId = (value, helpers) => {
   return value;
 };
 
+const password = (value, helpers) => {
+  if (value.length < 8) {
+    return helpers.message('password must be at least 8 characters');
+  }
+  if (!value.match(/\d/) || !value.match(/[a-zA-Z]/)) {
+    return helpers.message('password must contain at least 1 letter and 1 number');
+  }
+  return value;
+};
+
 const telephone = (value, helpers) => {
   if (value.length > 12) {
     return helpers.message('telephone must be at least 12 characters');
@@ -19,4 +29,5 @@ const telephone = (value, helpers) => {
 module.exports = {
   objectId,
   telephone,
+  password,
 };

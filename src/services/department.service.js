@@ -8,11 +8,12 @@ const ApiError = require('../utils/ApiError');
  * @returns {Promise<User>}
  */
 const createDepartment = async (userBody) => {
-  const contactPerson = await ContactPerson.create(userBody.contact)
-  userBody.contactPerson = contactPerson._id;
-  delete userBody.contact;
-  const user = await Department.create(userBody);
-  return user;
+  const deptBody = { ...userBody };
+  const contactPerson = await ContactPerson.create(deptBody.contactperson);
+  deptBody.contactPerson = contactPerson._id;
+  delete deptBody.contactperson;
+  const dept = await Department.create(deptBody);
+  return dept;
 };
 
 /**
@@ -35,7 +36,13 @@ const queryDepartments = async (filter, options) => {
  * @returns {Promise<User>}
  */
 const getDepartmentById = async (id) => {
-  return Department.findById(id);
+  const dept = await Department.findById(id);
+  if (dept) {
+    const _dept = { ...dept.toJSON() };
+    _dept.contactPerson = await ContactPerson.findById(dept.contactPerson);
+    return _dept;
+  }
+  return null;
 };
 
 /**
@@ -50,8 +57,8 @@ const updateDepartmentById = async (departmentId, updateBody) => {
     throw new ApiError(httpStatus.NOT_FOUND, 'Department not found');
   }
 
-  Object.assign(departmentId, updateBody);
-  await Department.save();
+  Object.assign(department, updateBody);
+  await department.save();
   return department;
 };
 
@@ -61,12 +68,14 @@ const updateDepartmentById = async (departmentId, updateBody) => {
  * @returns {Promise<User>}
  */
 const deleteDepartmentById = async (departmentId) => {
-  const department = await getUserById(departmentId);
+  const department = await Department.findById(departmentId);
   if (!department) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Department not found');
   }
-  await department.remove();
-  return department;
+  const contactPerson = await ContactPerson.findById(department.contactPerson);
+  await contactPerson.remove();
+  const deptremoved = await department.remove();
+  return deptremoved;
 };
 
 module.exports = {

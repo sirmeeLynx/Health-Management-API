@@ -10,7 +10,7 @@ const createDepartment = catchAsync(async (req, res) => {
 });
 
 const getDepartments = catchAsync(async (req, res) => {
-  const result = await departmentService.queryDepartments(filter, options);
+  const result = await departmentService.queryDepartments({}, {});
   res.send(result);
 });
 
@@ -28,18 +28,16 @@ const updateDepartment = catchAsync(async (req, res) => {
 });
 
 const deleteDepartment = catchAsync(async (req, res) => {
-  await departmentService.deleteUserById(req.params.departmentId);
+  await departmentService.deleteDepartmentById(req.params.departmentId);
   res.status(httpStatus.NO_CONTENT).send();
 });
 
-
 const searchDepartments = catchAsync(async (req, res) => {
-    const filter = pick(req.query, ['name']);
-    const options = pick(req.query, ['sortBy', 'limit', 'page']);
-    const result = await departmentService.queryDepartments(filter, options);
-    res.send(result);
+  const filter = pick(req.query, ['name']);
+  const options = pick(req.query, ['sortBy', 'limit', 'page']);
+  const result = await departmentService.queryDepartments(filter, options);
+  res.send(result);
 });
-  
 
 module.exports = {
   createDepartment,
@@ -47,5 +45,5 @@ module.exports = {
   getDepartment,
   updateDepartment,
   deleteDepartment,
-  searchDepartments
+  searchDepartments,
 };

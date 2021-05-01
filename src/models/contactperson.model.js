@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const validator = require('validator');
 const { toJSON } = require('./plugins');
 
 const contactPersonSchema = mongoose.Schema(
@@ -24,25 +25,27 @@ const contactPersonSchema = mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      minlength: 12,
+      minlength: 11,
       validate(value) {
         if (!value.match(/\d/g)) {
           throw new Error('Telephone must contain only numbers');
         }
-      }
+      },
     },
-    metaData: [{
-       key: {
-        type: String,
-        required: true,
-        trim: true,
-      }, 
-       value: {
-        type: String,
-        required: true,
-        trim: true,
-      } 
-    }],
+    metaData: [
+      {
+        key: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+        value: {
+          type: String,
+          required: true,
+          trim: true,
+        },
+      },
+    ],
   },
   {
     timestamps: true,
