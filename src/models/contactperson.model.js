@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const { toJSON, paginate } = require('./plugins');
 const { roles } = require('../config/roles');
 
-const userSchema = mongoose.Schema(
+const contactPerson = mongoose.Schema(
   {
     name: {
       type: String,
@@ -51,8 +51,8 @@ const userSchema = mongoose.Schema(
 );
 
 // add plugin that converts mongoose to json
-userSchema.plugin(toJSON);
-userSchema.plugin(paginate);
+contactPerson.plugin(toJSON);
+contactPerson.plugin(paginate);
 
 /**
  * Check if email is taken
@@ -60,7 +60,7 @@ userSchema.plugin(paginate);
  * @param {ObjectId} [excludeUserId] - The id of the user to be excluded
  * @returns {Promise<boolean>}
  */
-userSchema.statics.isEmailTaken = async function (email, excludeUserId) {
+contactPerson.statics.isEmailTaken = async function (email, excludeUserId) {
   const user = await this.findOne({ email, _id: { $ne: excludeUserId } });
   return !!user;
 };
@@ -70,12 +70,12 @@ userSchema.statics.isEmailTaken = async function (email, excludeUserId) {
  * @param {string} password
  * @returns {Promise<boolean>}
  */
-userSchema.methods.isPasswordMatch = async function (password) {
+contactPerson.methods.isPasswordMatch = async function (password) {
   const user = this;
   return bcrypt.compare(password, user.password);
 };
 
-userSchema.pre('save', async function (next) {
+contactPerson.pre('save', async function (next) {
   const user = this;
   if (user.isModified('password')) {
     user.password = await bcrypt.hash(user.password, 8);
@@ -84,8 +84,8 @@ userSchema.pre('save', async function (next) {
 });
 
 /**
- * @typedef User
+ * @typedef ContactPerson
  */
-const User = mongoose.model('User', userSchema);
+const ContactPerson = mongoose.model('ContactPerson', contactPerson);
 
-module.exports = User;
+module.exports = ContactPerson;
