@@ -38,6 +38,6 @@ departmentSchema.plugin(toJSON);
 /**
  * @typedef Department
  */
-const Department = mongoose.model('Department', userSchema);
+const Department = mongoose.model('Department', departmentSchema);
 
 module.exports = Department;
