@@ -1,5 +1,5 @@
 const httpStatus = require('http-status');
-const { User } = require('../models');
+const { Department, ContactPerson } = require('../models');
 const ApiError = require('../utils/ApiError');
 
 /**
@@ -8,10 +8,10 @@ const ApiError = require('../utils/ApiError');
  * @returns {Promise<User>}
  */
 const createDepartment = async (userBody) => {
-  if (await User.isEmailTaken(userBody.email)) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
-  }
-  const user = await User.create(userBody);
+  const contactPerson = await ContactPerson.create(userBody.contact)
+  userBody.contactPerson = contactPerson._id;
+  delete userBody.contact;
+  const user = await Department.create(userBody);
   return user;
 };
 
@@ -25,8 +25,8 @@ const createDepartment = async (userBody) => {
  * @returns {Promise<QueryResult>}
  */
 const queryDepartments = async (filter, options) => {
-  const users = await User.paginate(filter, options);
-  return users;
+  const departments = await Department.paginate(filter, options);
+  return departments;
 };
 
 /**
@@ -35,7 +35,7 @@ const queryDepartments = async (filter, options) => {
  * @returns {Promise<User>}
  */
 const getDepartmentById = async (id) => {
-  return User.findById(id);
+  return Department.findById(id);
 };
 
 /**
@@ -44,17 +44,15 @@ const getDepartmentById = async (id) => {
  * @param {Object} updateBody
  * @returns {Promise<User>}
  */
-const updateDepartmentById = async (userId, updateBody) => {
-  const user = await getUserById(userId);
-  if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+const updateDepartmentById = async (departmentId, updateBody) => {
+  const department = await getDepartmentById(departmentId);
+  if (!department) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Department not found');
   }
-  if (updateBody.email && (await User.isEmailTaken(updateBody.email, userId))) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Email already taken');
-  }
-  Object.assign(user, updateBody);
-  await user.save();
-  return user;
+
+  Object.assign(departmentId, updateBody);
+  await Department.save();
+  return department;
 };
 
 /**
@@ -62,13 +60,13 @@ const updateDepartmentById = async (userId, updateBody) => {
  * @param {ObjectId} userId
  * @returns {Promise<User>}
  */
-const deleteDepartmentById = async (userId) => {
-  const user = await getUserById(userId);
-  if (!user) {
-    throw new ApiError(httpStatus.NOT_FOUND, 'User not found');
+const deleteDepartmentById = async (departmentId) => {
+  const department = await getUserById(departmentId);
+  if (!department) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'Department not found');
   }
-  await user.remove();
-  return user;
+  await department.remove();
+  return department;
 };
 
 module.exports = {

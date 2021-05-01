@@ -10,7 +10,7 @@ const createDepartment = catchAsync(async (req, res) => {
 });
 
 const getDepartments = catchAsync(async (req, res) => {
-  const result = await userService.queryDepartments(filter, options);
+  const result = await departmentService.queryDepartments(filter, options);
   res.send(result);
 });
 
